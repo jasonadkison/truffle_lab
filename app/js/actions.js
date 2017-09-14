@@ -69,6 +69,38 @@ export const watchForNewCampaigns = () => {
   };
 }
 
+export const watchReceived = address => {
+  return dispatch => {
+    const campaign = Campaign.at(address);
+    return campaign.LogContribution({}, { fromBlock: 0 })
+      .watch(function(err, received) {
+        if (err) {
+          console.error('Received error', address, err);
+        } else {
+          console.log('Contribution', received);
+          dispatch({
+            type: 'RECEIVE_LOG',
+            item: {
+              ...received,
+              args: {
+                ...received.args,
+                user: received.args.sender,
+                amount: parseInt(received.args.amount),
+                campaign: address,
+              },
+            },
+          });
+        }
+      });
+  };
+};
+
+export const watchRefunded = address => {
+  return dispatch => {
+
+  };
+};
+
 export const fetchCampaign = address => {
   console.log('fetch campaign', address);
   return (dispatch, getState) => {
@@ -109,7 +141,8 @@ export const fetchCampaign = address => {
         if (c.isSuccess) c.status = 'success';
         if (c.hasFailed) c.status = 'failed';
 
-        // TODO: trigger watch recieved & funded on address
+        dispatch(watchReceived(address));
+        dispatch(watchRefunded(address));
 
         // TODO: get funder
 
@@ -118,3 +151,12 @@ export const fetchCampaign = address => {
 
   };
 };
+
+export function contribute(address, amount) {
+  return (dispatch, getState) => {
+    const { account } = getState();
+    const campaign = Campaign.at(address);
+    const txParams = { from: account, value: parseInt(amount), gas: 4000000 };
+    return campaign.contribute(txParams);
+  };
+}
