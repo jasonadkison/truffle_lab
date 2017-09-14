@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import store from '../store.js';
 import NewCampaignForm from './NewCampaignForm.jsx';
-import Temp from './Temp.jsx';
 import Balance from './Balance.jsx';
+import ContributionForm from './ContributionForm.jsx';
+import Campaigns from './Campaigns.jsx';
+import Logs from './Logs.jsx';
 
 import { fetchAccounts, watchForNewCampaigns } from '../actions.js';
 
@@ -21,7 +23,18 @@ export default class App extends Component {
               <h3>Campaign Hub</h3>
               <NewCampaignForm />
               <Balance />
-              <Temp />
+              <div>
+
+                <div className="panel panel-default">
+                  <div className="panel-body">
+
+                    <ContributionForm />
+                    <Campaigns />
+                    <Logs />
+
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
