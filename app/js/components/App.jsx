@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import store from '../store.js';
-import CampaignForm from './CampaignForm.jsx';
+import NewCampaignForm from './NewCampaignForm.jsx';
 import Temp from './Temp.jsx';
 import Balance from './Balance.jsx';
-import AccountsList from './AccountsList.jsx';
 
 import { fetchAccounts, watchForNewCampaigns } from '../actions.js';
 
@@ -20,10 +19,9 @@ export default class App extends Component {
           <div className="row">
             <div className="col-md-12">
               <h3>Campaign Hub</h3>
-              <CampaignForm />
+              <NewCampaignForm />
               <Balance />
               <Temp />
-              <AccountsList />
             </div>
           </div>
         </div>

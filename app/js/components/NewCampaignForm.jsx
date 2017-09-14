@@ -7,7 +7,7 @@ const initialState = {
   duration: '',
 };
 
-class CampaignForm extends Component {
+class NewCampaignForm extends Component {
   constructor(props) {
     super(props);
     this.state = { ...initialState };
@@ -28,6 +28,7 @@ class CampaignForm extends Component {
     this.props.dispatch(createCampaign({ goal, duration }))
       .then(() => {
         this.setState({ ...initialState });
+        this.props.dispatch(fetchAccount(this.props.account));
       });
   }
   onChangeAccount = e => {
@@ -83,4 +84,4 @@ export default connect(state => {
     accounts: state.accounts,
     account: state.account,
   };
-})(CampaignForm);
+})(NewCampaignForm);

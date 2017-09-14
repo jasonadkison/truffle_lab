@@ -8,9 +8,9 @@ class Campaigns extends Component {
         <thead>
           <tr>
             <th>Campaign</th>
-            <th>Campaign Goal</th>
-            <th>Campaign Accepted</th>
-            <th>Campaign Withdrawn</th>
+            <th>Goal</th>
+            <th>Funds Accepted</th>
+            <th>Funds Withdrawn</th>
             <th>Deadline</th>
             <th>User Contributed</th>
             <th>User Refunded</th>
