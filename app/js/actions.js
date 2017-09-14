@@ -21,12 +21,17 @@ export const fetchAccounts = () => {
 };
 
 export const fetchAccount = (account) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     return window.web3.eth.getBalancePromise(account)
       .then(_balance => {
         const balance = _balance.toString(10);
         dispatch({ type: 'RECEIVE_ACCOUNT', account });
         dispatch({ type: 'RECEIVE_BALANCE', balance });
+
+        const { campaigns } = getState();
+        campaigns.forEach(item => {
+          dispatch(getFunder(item.campaign));
+        });
       })
       .catch((e) => {
         console.error(e);
@@ -101,6 +106,23 @@ export const watchRefunded = address => {
   };
 };
 
+export const getFunder = address => {
+  return (dispatch, getState) => {
+    const { account } = getState();
+    const campaign = Campaign.at(address);
+    return campaign.funderStructs.call(account, { from: account })
+      .then(funder => {
+        dispatch({
+          type: 'RECEIVE_FUNDER',
+          campaign: address,
+          account: account,
+          contribution: parseInt(funder[0].toString(10)),
+          refunded: parseInt(funder[1].toString(10)),
+        });
+      });
+  };
+};
+
 export const fetchCampaign = address => {
   console.log('fetch campaign', address);
   return (dispatch, getState) => {
@@ -143,8 +165,7 @@ export const fetchCampaign = address => {
 
         dispatch(watchReceived(address));
         dispatch(watchRefunded(address));
-
-        // TODO: get funder
+        dispatch(getFunder(address));
 
         dispatch({ type: 'RECEIVE_CAMPAIGN', campaign: c });
       });

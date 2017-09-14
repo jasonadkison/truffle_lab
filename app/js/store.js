@@ -33,6 +33,19 @@ const campaigns = (state = [], action) => {
   if (action.type === 'RECEIVE_CAMPAIGN') {
     return [...state, action.campaign];
   }
+  if (action.type === 'RECEIVE_FUNDER') {
+    return state.map(item => {
+      if (item.campaign === action.campaign) {
+        return {
+          ...item,
+          funderAddress: action.account,
+          funderContribution: action.contribution,
+          funderRefund: action.refunded,
+        };
+      }
+      return item;
+    })
+  }
   return state;
 }
 

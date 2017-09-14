@@ -26,8 +26,8 @@ class Campaigns extends Component {
               <td>{item.accepted}</td>
               <td>{item.withdrawn}</td>
               <td>{item.deadline}</td>
-              <td>item.userAccepted</td>
-              <td>item.userRefunded</td>
+              <td>{item.funderContribution}</td>
+              <td>{item.funderRefund}</td>
               <td>{item.status}</td>
               <td>
                 <form>
