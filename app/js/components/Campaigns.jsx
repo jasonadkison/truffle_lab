@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { refund } from '../actions.js';
 
 class Campaigns extends Component {
+  onClickRefund = (e, campaign) => {
+    e.preventDefault();
+    this.props.dispatch(refund(campaign));
+  }
   render() {
     return (
       <table className="table table-striped table-bordered">
@@ -30,9 +35,17 @@ class Campaigns extends Component {
               <td>{item.funderRefund}</td>
               <td>{item.status}</td>
               <td>
-                <form>
-                  <input type="submit" className="btn btn-success addnew pull-right" value="Refund" />
-                </form>
+                <input
+                  type="submit"
+                  className="btn btn-success addnew pull-right"
+                  value="Refund"
+                  disabled={
+                    (item.status !== 'failed' || item.funderContribution - item.funderRefund <= 0)
+                  }
+                  onClick={e => {
+                    this.onClickRefund(e, item.campaign);
+                  }}
+                />
               </td>
             </tr>
           ))}

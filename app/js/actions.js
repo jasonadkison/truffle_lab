@@ -102,7 +102,27 @@ export const watchReceived = address => {
 
 export const watchRefunded = address => {
   return dispatch => {
-
+    const campaign = Campaign.at(address);
+    return campaign.LogRefund({}, { fromBlock: 0 })
+      .watch(function(err, refund) {
+        if (err) {
+          console.error('Refund error', address, err);
+        } else {
+          console.log('Refund', refund);
+          dispatch({
+            type: 'RECEIVE_LOG',
+            item: {
+              ...refund,
+              args: {
+                ...refund.args,
+                user: refund.args.funder,
+                amount: parseInt(refund.args.amount),
+                campaign: address,
+              },
+            },
+          });
+        }
+      });
   };
 };
 
@@ -179,5 +199,13 @@ export function contribute(address, amount) {
     const campaign = Campaign.at(address);
     const txParams = { from: account, value: parseInt(amount), gas: 4000000 };
     return campaign.contribute(txParams);
+  };
+}
+
+export function refund(campaignAddress) {
+  return (dispatch, getState) => {
+    const { account } = getState();
+    const campaign = Campaign.at(campaignAddress);
+    return campaign.requestRefund({ from: account, gas: 4000000 });
   };
 }
