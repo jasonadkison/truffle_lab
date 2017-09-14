@@ -1,5 +1,7 @@
 import { CampaignHub, Campaign } from './contracts';
 
+const watcherIndex = {};
+
 export const fetchAccounts = () => {
   return (dispatch) => {
     return window.web3.eth.getAccountsPromise()
@@ -183,8 +185,12 @@ export const fetchCampaign = address => {
         if (c.isSuccess) c.status = 'success';
         if (c.hasFailed) c.status = 'failed';
 
-        dispatch(watchReceived(address));
-        dispatch(watchRefunded(address));
+        if (!watcherIndex[address]) {
+          watcherIndex[address] = true;
+          dispatch(watchReceived(address));
+          dispatch(watchRefunded(address));
+        }
+
         dispatch(getFunder(address));
 
         dispatch({ type: 'RECEIVE_CAMPAIGN', campaign: c });
@@ -194,6 +200,7 @@ export const fetchCampaign = address => {
 };
 
 export function contribute(address, amount) {
+  console.log('contribute', address, amount);
   return (dispatch, getState) => {
     const { account } = getState();
     const campaign = Campaign.at(address);

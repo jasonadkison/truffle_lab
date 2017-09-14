@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { contribute, fetchAccount } from '../actions.js';
+import { contribute, fetchAccount, fetchCampaign } from '../actions.js';
 
 const initialState = { campaign: '', amount: '' };
 
@@ -25,6 +25,7 @@ class ContributionForm extends Component {
     this.props.dispatch(contribute(campaign, amount))
       .then(() => {
         this.setState({ ...initialState });
+        this.props.dispatch(fetchCampaign(campaign));
       });
   }
   render() {
@@ -46,7 +47,11 @@ class ContributionForm extends Component {
                 >
                   <option></option>
                   {this.props.campaigns.map(item => (
-                    <option key={item.campaign} value={item.campaign}>
+                    <option
+                      key={item.campaign}
+                      value={item.campaign}
+                      disabled={item.status !== 'open'}
+                    >
                       {item.campaign}
                     </option>
                   ))}

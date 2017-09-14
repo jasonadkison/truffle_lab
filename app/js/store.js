@@ -31,6 +31,17 @@ const logs = (state = [], action) => {
 
 const campaigns = (state = [], action) => {
   if (action.type === 'RECEIVE_CAMPAIGN') {
+    if (state.filter(item => item.campaign === action.campaign.campaign).length) {
+      return state.map(item => {
+        if (item.campaign === action.campaign.campaign) {
+          return {
+            ...item,
+            ...action.campaign,
+          };
+        };
+        return item;
+      });
+    }
     return [...state, action.campaign];
   }
   if (action.type === 'RECEIVE_FUNDER') {
